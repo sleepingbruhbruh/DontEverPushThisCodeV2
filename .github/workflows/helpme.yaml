@@ -12,9 +12,9 @@ on:
 permissions:
   contents: read
   # TODO#0a: add permission required for SARIF upload (github/codeql-action/upload-sarif)
-  upload: github/codeql-action/upload-sarif
+  upload: write
   # TODO#0b: add permission so Gitleaks/Sonar can comment on PRs + issues
-  comment: Gitleaks/Sonar
+  comment: write
   # TODO#0c: add permission for OIDC token (id-token)
   id-token: read
   issues: write
