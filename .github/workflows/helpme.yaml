@@ -85,10 +85,10 @@ jobs:
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
                   SONAR_HOST_URL: https://sonarcloud.io # Or your self-hosted URL
-            with:
-              args: >
-                -Dsonar.projectKey=sleepingbruhbruh_DontEverPushThisCodeV2
-                -Dsonar.organization=sleepingbruhbruh
+              with:
+                args: >
+                  -Dsonar.projectKey=sleepingbruhbruh_DontEverPushThisCodeV2
+                  -Dsonar.organization=sleepingbruhbruh
 
     # GATE#1b: SAST via CodeQL (results in GitHub Security tab)
     codeql-scan:
