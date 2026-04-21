@@ -173,8 +173,8 @@ jobs:
               uses: github/codeql-action/upload-sarif@v3
               continue-on-error: true
               with:
-                  sarif_file: reports/dependency-check-report.sarif
-                  category: pendency-check
+                  sarif_file: 'reports/dependency-check-report.sarif'
+                  category: 'dependency-check'
 
             # TODO#15: upload raw Depcheck report folder as artifact
             # Action: actions/upload-artifact@v4
