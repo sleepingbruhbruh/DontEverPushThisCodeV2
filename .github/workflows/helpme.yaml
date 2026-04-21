@@ -10,17 +10,11 @@ on:
 #       (c) comment on PRs/issues, (d) request OIDC tokens.
 # Docs: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
 permissions:
-  contents: read
-  # TODO#0a: add permission required for SARIF upload (github/codeql-action/upload-sarif)
-  upload: write
-  # TODO#0b: add permission so Gitleaks/Sonar can comment on PRs + issues
-  comment: write
-  # TODO#0c: add permission for OIDC token (id-token)
-  id-token: read
-  issues: write
-  pull-requests: write
-  security-events: write  # required to upload SARIF to GitHub Security tab
-  actions: read,upload,comment,request
+  contents: read           # (a) Read code
+  security-events: write   # (b) Upload SARIF to Security tab
+  pull-requests: write     # (c) Comment on PRs
+  issues: write            # (c) Comment on Issues
+  id-token: write          # (d) Request OIDC tokens (must be 'write' for OIDC)
 
 jobs:
     # GATE#0: Secret scanning (TruffleHog + Gitleaks)
@@ -217,7 +211,8 @@ jobs:
             # Action: github/codeql-action/upload-sarif@v3, category: trivy
             - name: upload Trivy SARIF to Security tab
               uses: github/codeql-action/upload-sarif@v3
-              category: trivy
+              with:
+                category: trivy
             # TODO#21: upload trivy-results.sarif as workflow artifact
             - name: Upload Trivy scan results
               if: always()
