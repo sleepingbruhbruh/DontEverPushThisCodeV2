@@ -16,10 +16,10 @@ permissions:
   # TODO#0b: add permission so Gitleaks/Sonar can comment on PRs + issues
   comment: Gitleaks/Sonar
   # TODO#0c: add permission for OIDC token (id-token)
-  id-token: true
-  issues: true
-  pull-requests: true
-  security-events: true  # required to upload SARIF to GitHub Security tab
+  id-token: read
+  issues: write
+  pull-requests: write
+  security-events: write  # required to upload SARIF to GitHub Security tab
   actions: read,upload,comment,request
 
 jobs:
@@ -41,6 +41,7 @@ jobs:
               continue-on-error: true # NOTE THAT THIS IS NOT A BEST PRACTICE — ideally we would fail here and fix secrets before moving on to later gates, but for demo purposes we want to see results from all scanners.
               with:
                 path: ./
+
                 # TODO#2: set base + HEAD refs so TruffleHog scans the commit diff
                 # base: ???
                 # head: ???
@@ -62,7 +63,7 @@ jobs:
               uses: gitleaks/gitleaks-action@v2
               continue-on-error: true
               env:
-                GITHUB_TOKEN: secrets.GITHUB_TOKEN
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
                 GITLEAKS_ENABLE_SUMMARY: true
 
@@ -88,7 +89,7 @@ jobs:
               uses: SonarSource/sonarqube-scan-action@v7.1.0
               continue-on-error: true
               env:
-                  SONAR_TOKEN: secrets.SONAR_TOKEN
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     # GATE#1b: SAST via CodeQL (results in GitHub Security tab)
     codeql-scan:
@@ -99,7 +100,7 @@ jobs:
             matrix:
                 # TODO#7: set correct CodeQL language for this Next.js / React project 
                 #HINT: What language do we use to write React code? What about Next.js API routes?
-                language: [ 'React' ]
+                language: [ 'javascript-typescript' ]
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -205,10 +206,10 @@ jobs:
               with:
                 image-ref: 'my-app:latest'
                 # TODO#17: output format for Security tab integration
-                format: 'HTML'
+                format: 'sarif'
                 output: 'trivy-results.sarif'
                 # TODO#18: which severities should be reported? (UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL)
-                severity: 'HIGH'
+                severity: 'HIGH,CRITICAL'
                 # TODO#19: should we include CVEs with no available fix? set flag accordingly
                 # ignore-unfixed: ???
                 ignore-unfixed: true
